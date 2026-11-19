@@ -31,3 +31,6 @@ target/
 *.o
 *.obj
 .DS_Store
+
+# 本地手动安装的依赖（无 pip 环境时使用）
+.pylibs/

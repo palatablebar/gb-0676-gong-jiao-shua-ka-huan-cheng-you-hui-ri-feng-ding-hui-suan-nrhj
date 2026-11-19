@@ -13,6 +13,8 @@
 | M5 优惠回算 | 查看并运行优惠回算 | `/api/discounts` | `app/modules/m5_discounts/rules.py` | `tests/test_m5.py` |
 | M6 清分对账 | 查看并运行清分对账 | `/api/clearing` | `app/modules/m6_clearing/rules.py` | `tests/test_m6.py` |
 | M7 日结归档 | 查看并运行日结归档 | `/api/settlement` | `app/modules/m7_settlement/rules.py` | `tests/test_m7.py` |
+| M8 快照裁决 | 摄入累计快照并裁决撤回 | `/snapshots` | `app/snapshot/rules.py` `app/snapshot/store.py` | `tests/test_snapshot_rules.py` `tests/test_snapshot_store.py` |
+| M9 卡日账册 | 发布/封存每卡日换乘封顶日账 | `/ledgers` | `app/snapshot/store.py` | `tests/test_snapshot_store.py` |
 
 ## 陷阱登记
 
@@ -31,6 +33,14 @@
 | TRAP-11 | 混合偏移 | 落错版本 | UTC归整 | `app/values.py` | `tests/test_m3.py::test_timezone_equal` |
 | TRAP-23 | 换乘截止点 | 重复优惠 | 截止点排除 | `app/modules/m5_discounts/rules.py` | `tests/test_m5.py::test_exact_window_excluded` |
 | TRAP-25 | 票价重叠 | 随意取版 | 冲突隔离 | `app/modules/m3_fares/rules.py` | `tests/test_m3.py::test_overlap_rejected` |
+| TRAP-30 | 快照缺席即撤回 | 掉线丢记录 | 宽限内 offline_pending 继续占额 | `app/snapshot/rules.py` | `tests/test_snapshot_rules.py::test_single_absence_is_offline_pending_and_kept_in_ledger` |
+| TRAP-31 | 误刷长期占位 | 全保留不释放 | 连续完整快照缺席达阈值且超宽限才 withdrawn | `app/snapshot/rules.py` | `tests/test_snapshot_rules.py::test_consecutive_complete_absence_past_grace_withdraws` |
+| TRAP-32 | 序号断档误判撤回 | 自动撤回覆盖掉线 | stream_gap 永久挂起待人工 | `app/snapshot/rules.py` | `tests/test_snapshot_rules.py::test_sequence_gap_holds_forever_not_auto_withdrawn` |
+| TRAP-33 | 同快照重试重复占额 | 重复入库 | 内容哈希幂等，冲突 409 不覆盖 | `app/snapshot/store.py` | `tests/test_snapshot_store.py::test_retry_is_idempotent_no_double_share` |
+| TRAP-34 | 缺件上传替换已发布日账 | 静默覆盖 | 版本化发布，漂移只追加新版，旧版可查 | `app/snapshot/store.py` | `tests/test_snapshot_store.py::test_publish_creates_then_drifts_then_new_version_keeps_old` |
+| TRAP-35 | 未对平封存 | 带差异封账 | 对平+无挂起+乐观锁三重守卫 | `app/snapshot/store.py` | `tests/test_snapshot_store.py::test_seal_requires_balance_and_pending_clearance` |
+| TRAP-36 | 发布中断污染日账 | 半成品可见 | 事务内重算回读，异常整体回滚 | `app/snapshot/store.py` | `tests/test_snapshot_store.py::test_publish_failure_keeps_old_ledger_intact` |
+| TRAP-37 | 撤回后重现未复活 | 额度永久丢失 | revived 重新占额，挂起后重现解除 | `app/snapshot/rules.py` | `tests/test_snapshot_rules.py::test_revived_after_withdrawal_reoccupies` |
 
 ## 对账规则
 

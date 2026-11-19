@@ -1,0 +1,5 @@
+snapshot_seq,device_id,snapshot_time,is_complete,event_id,card,route,event_time,result,reported
+3,D1,2026-11-16T11:00:00+08:00,true,E1,C1,01,2026-11-16T08:00:00+08:00,success,2.50
+3,D1,2026-11-16T11:00:00+08:00,true,E2,C1,02,2026-11-16T08:15:00+08:00,success,2.50
+3,D1,2026-11-16T11:00:00+08:00,true,E3,C1,03,2026-11-16T08:40:00+08:00,success,2.50
+3,D1,2026-11-16T11:00:00+08:00,true,E4,C2,01,2026-11-16T08:05:00+08:00,success,2.50

@@ -1,0 +1,16 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{title}} · 累计快照裁决</title><link rel="stylesheet" href="/static/theme.css"><link rel="stylesheet" href="/static/layout.css"><link rel="stylesheet" href="/static/components.css"><link rel="stylesheet" href="/static/snapshot.css"></head><body><div class="app"><aside class="rail"><div class="brand">换乘清分<span class="meta"> / TC</span></div><nav>{% for slug,name in modules %}<a href="/{{slug}}">{{'%02d'|format(loop.index)}}　{{name}}</a>{% endfor %}<a class="active" href="/snapshots">08　快照裁决</a><a href="/ledgers">09　卡日账册</a></nav><div class="footnote">累计快照撤回裁决<br>保留 / 更新 / 撤回留痕</div></aside><div class="work"><header class="topbar"><h1>累计刷卡快照裁决</h1><span class="meta">缺席不即撤回 · 宽限 + 断档 + 连续完整快照三态裁决</span></header><main class="content">
+<section class="panel"><div class="panel__head"><h2>上传累计快照</h2><span class="tag">同一快照号重试幂等</span></div><div class="panel__body toolbar">
+<input type="file" id="snapfile" accept=".csv" aria-label="快照 CSV">
+<button id="ingest" class="primary">摄入快照</button>
+<button id="loadDemo">载入演示序列</button>
+<span id="feedback" role="status"></span>
+</div><div class="panel__body meta">列：snapshot_seq, device_id, snapshot_time, is_complete, event_id, card, route, event_time, result, reported</div></section>
+<section class="panel"><div class="panel__head"><h2>快照流（车机 × 业务日）</h2><span class="tag" id="streamCount"></span></div><div class="table-scroll"><table><thead><tr><th>车机</th><th>业务日</th><th>快照数</th><th>完整快照</th><th>首传</th><th>最新传</th><th></th></tr></thead><tbody id="streams"><tr><td class="empty">暂无快照流。</td></tr></tbody></table></div></section>
+<div id="detail" hidden>
+<section class="panel"><div class="panel__head"><h2 id="streamTitle">快照明细</h2><span id="streamMeta" class="meta"></span></div><div class="panel__body toolbar"><input class="records-search" id="eventFilter" placeholder="筛选事件号 / 卡号 / 状态" aria-label="筛选事件"></div>
+<div class="table-scroll"><table><thead><tr><th>事件</th><th>卡号</th><th>当前状态</th><th>首见#</th><th>末见#</th><th>连续缺席完整快照</th><th>版本数</th><th>裁决轨迹（保留/更新/撤回原因）</th><th>人工裁决</th></tr></thead><tbody id="events"></tbody></table></div></section>
+<section class="panel"><div class="panel__head"><h2>逐快照记录视图</h2><span class="meta">每份快照对每条事件的动作</span></div><div class="table-scroll"><table id="snapTable"></table></div></section>
+<section class="panel"><div class="panel__head"><h2>隔离记录</h2><span class="bad" id="quarantineCount">0</span></div><div class="table-scroll"><table><thead><tr><th>快照#</th><th>行</th><th>原因</th><th>依据</th></tr></thead><tbody id="quarantine"></tbody></table></div></section>
+<section class="panel"><div class="panel__head"><h2>每卡日账候选与发布</h2><span class="meta">对平才能封存</span></div><div class="table-scroll"><table><thead><tr><th>卡号</th><th>业务日</th><th>事件数</th><th>换乘</th><th>应扣</th><th>申报</th><th>差额</th><th>对平</th><th>已发布</th><th>漂移</th><th>操作</th></tr></thead><tbody id="ledgers"></tbody></table></div></section>
+</div>
+</main><footer class="statusbar"><span id="crumb">/snapshots</span><span>Asia/Shanghai · CNY · 幂等摄入</span></footer></div></div><script src="/static/snapshot.js"></script></body></html>
